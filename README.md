@@ -2,9 +2,7 @@
 
 A lightweight REST API framework built on Node.js, Express.js, Prisma, and TypeScript. Allegro provides the structure and conventions for building data-driven APIs — routing, validation, error handling, and database access — without dictating what your domain looks like.
 
-This repository includes a **task management example** (projects, tasks, tags) to demonstrate how the framework patterns fit together in a real implementation. The example is not the framework itself.
-
-> **Migration Note**: This is a conversion of the original PHP/Maestro framework application to a modern Node.js REST stack.
+This repository includes a **veterinary practice example** (treatments, vets, appointment types) to demonstrate how the framework patterns fit together in a real implementation. The example is not the framework itself.
 
 ## Quick Start
 
@@ -21,7 +19,7 @@ npm run prisma:generate
 
 # Set up the database
 npm run prisma:migrate
-npm run prisma:seed     # Seed with LOTR-themed sample data
+npm run prisma:seed     # Seed with the veterinary practice data from data.ts
 
 npm run dev
 ```
@@ -49,13 +47,13 @@ src/
 ├── middleware/
 │   └── errorHandling.ts   # asyncHandler wrapper + central error handler
 ├── routes/                # One file per resource, mounted in server.ts
-│   ├── projects.ts
-│   ├── tasks.ts
-│   └── tags.ts
+│   ├── treatments.ts
+│   ├── vets.ts
+│   └── appointmentTypes.ts
 ├── services/              # Business logic (all Prisma interactions)
-│   ├── ProjectService.ts
-│   ├── TaskService.ts
-│   └── TagService.ts
+│   ├── TreatmentService.ts
+│   ├── VetService.ts
+│   └── AppointmentTypeService.ts
 ├── types/
 │   └── index.ts           # TypeScript interfaces
 └── validation/
@@ -65,6 +63,7 @@ prisma/
 ├── schema.prisma          # Prisma data model
 └── seed.ts                # Database seed script
 
+data.ts                    # Sample data used by the seed script
 prisma.config.ts           # Prisma 7 configuration
 ```
 
@@ -183,68 +182,62 @@ That's it — validation errors, service errors, and database errors are all han
 
 Base URL: `http://localhost:4000`
 
-### Projects
+### Treatments
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/projects` | List all projects |
-| GET | `/projects/:id` | Get a project |
-| POST | `/projects` | Create a project |
-| PUT | `/projects/:id` | Update a project |
-| DELETE | `/projects/:id` | Delete a project |
+| GET | `/treatments` | List all treatments |
+| GET | `/treatments/:id` | Get a treatment |
+| POST | `/treatments` | Create a treatment |
+| PUT | `/treatments/:id` | Update a treatment |
+| DELETE | `/treatments/:id` | Delete a treatment |
 
 **Create / Update body:**
-
-```json
-{ "title": "My Project", "description": "Optional" }
-```
-
-### Tasks
-
-| Method | Path | Description |
-| --- | --- | --- |
-| GET | `/tasks` | List tasks (filterable) |
-| GET | `/tasks/:id` | Get a task |
-| POST | `/tasks` | Create a task |
-| PUT | `/tasks/:id` | Update a task |
-| DELETE | `/tasks/:id` | Delete a task |
-| POST | `/tasks/:taskId/tags/:tagId` | Add tag to task |
-| DELETE | `/tasks/:taskId/tags/:tagId` | Remove tag from task |
-
-**Query parameters for `GET /tasks`:**
-
-- `projectId` — filter by project
-- `tagId` — filter by tag
-- `priority` — filter by priority (0–3)
-- `status` — filter by status (0–4)
-
-**Create body:**
 
 ```json
 {
-  "title": "New Task",
-  "description": "Optional",
-  "priority": 2,
-  "status": 0,
-  "progress": 0,
-  "projectId": 1
+  "icon": "💉",
+  "title": "Vaccinations",
+  "description": "Core and booster vaccinations.",
+  "duration": "15 min"
 }
 ```
 
-### Tags
+### Vets
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/tags` | List all tags |
-| GET | `/tags/:id` | Get a tag |
-| POST | `/tags` | Create a tag |
-| PUT | `/tags/:id` | Update a tag |
-| DELETE | `/tags/:id` | Delete a tag |
+| GET | `/vets` | List all vets |
+| GET | `/vets/:id` | Get a vet |
+| POST | `/vets` | Create a vet |
+| PUT | `/vets/:id` | Update a vet |
+| DELETE | `/vets/:id` | Delete a vet |
 
 **Create / Update body:**
 
 ```json
-{ "title": "My Tag" }
+{
+  "name": "Dr. Robin Smits",
+  "role": "Veterinarian",
+  "bio": "Focuses on general medicine and surgery.",
+  "initials": "RS"
+}
+```
+
+### Appointment types
+
+| Method | Path | Description |
+| --- | --- | --- |
+| GET | `/appointment-types` | List all appointment types |
+| GET | `/appointment-types/:id` | Get an appointment type |
+| POST | `/appointment-types` | Create an appointment type |
+| PUT | `/appointment-types/:id` | Update an appointment type |
+| DELETE | `/appointment-types/:id` | Delete an appointment type |
+
+**Create / Update body:**
+
+```json
+{ "slug": "vaccination", "label": "Vaccination", "durationMinutes": 15 }
 ```
 
 ### Health
@@ -260,7 +253,7 @@ GET /health
 All errors return JSON with an `error` field:
 
 ```json
-{ "error": "Task not found" }
+{ "error": "Vet not found" }
 ```
 
 | Status | Meaning |
@@ -273,19 +266,21 @@ All errors return JSON with an `error` field:
 
 ## Validation Rules
 
-### Tasks
+On create every field is required; on update every field is optional.
 
-- `title` — required, min 1 character
-- `priority` — required (create), integer 0–3
-- `status` — required (create), integer 0–4
-- `progress` — optional, integer 0–100, defaults to 0
-- `description` — optional
-- `projectId` — optional
+### Treatments
 
-### Projects & Tags
+- `icon`, `title`, `description`, `duration` — strings, min 1 character
 
-- `title` — required, min 1 character
-- `description` — optional (projects only)
+### Vets
+
+- `name`, `role`, `bio`, `initials` — strings, min 1 character
+
+### Appointment types
+
+- `slug` — string, min 1 character, must be unique
+- `label` — string, min 1 character
+- `durationMinutes` — integer, at least 1
 
 ---
 
@@ -334,11 +329,11 @@ NODE_ENV=development
 
 ## Sample Data
 
-The seed script populates the example domain with Lord of the Rings themed data:
+The seed script reads `data.ts` (the same content the Svelte frontend uses) and fills the database with:
 
-- **3 Projects**: The Fellowship of the Ring, The Two Towers, The Return of the King
-- **4 Tags**: Men, Hobbits, Elves, Dwarves
-- **15 Tasks**: distributed across projects with tag associations
+- **6 Treatments**: Vaccinations, General check-up, New puppy / kitten consult, Skin & allergy consult, Lab diagnostics, Exotic animal consult
+- **4 Vets**: Dr. Alex van Dijk, Dr. Robin Smits, Dr. Farah El Amrani, Dr. Michael de Groot
+- **5 Appointment types**: Vaccination, General check-up, New puppy / kitten consult, Skin or allergy issue, Follow-up visit
 
 ---
 
@@ -347,23 +342,6 @@ The seed script populates the example domain with Lord of the Rings themed data:
 - Input validated with Zod before reaching the database
 - Prisma uses parameterized queries (SQL injection safe)
 - CORS enabled for local development
-
----
-
-## Migration from PHP
-
-The example domain was originally built on a PHP/Maestro framework. Allegro is its Node.js successor.
-
-| Aspect | PHP | Allegro |
-| --- | --- | --- |
-| Framework | Custom Maestro MVC | Express.js |
-| ORM | Repository Pattern (PDO) | Prisma |
-| API | REST | REST |
-| Language | PHP 8.2 | TypeScript 5.x |
-| Validation | Manual | Zod |
-| Database | SQLite | SQLite |
-
-**Original Authors**: Frans Blauw, Valeria Stamenova
 
 ---
 

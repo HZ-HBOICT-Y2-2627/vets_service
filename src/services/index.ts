@@ -1,3 +1,3 @@
-export { TaskService, taskService } from './TaskService';
-export { ProjectService, projectService } from './ProjectService';
-export { TagService, tagService } from './TagService';
+export { TreatmentService, treatmentService } from './TreatmentService';
+export { VetService, vetService } from './VetService';
+export { AppointmentTypeService, appointmentTypeService } from './AppointmentTypeService';

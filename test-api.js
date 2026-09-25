@@ -44,12 +44,13 @@ async function request(method, path, body) {
 }
 
 const tests = [
-  { name: 'Health check',        fn: () => request('GET', '/health') },
-  { name: 'Get all projects',    fn: () => request('GET', '/projects') },
-  { name: 'Get all tags',        fn: () => request('GET', '/tags') },
-  { name: 'Get all tasks',       fn: () => request('GET', '/tasks') },
-  { name: 'Get single task',     fn: () => request('GET', '/tasks/1') },
-  { name: 'Create a project',    fn: () => request('POST', '/projects', { title: 'Test Project', description: 'Created by test' }) },
+  { name: 'Health check',              fn: () => request('GET', '/health') },
+  { name: 'Get all treatments',        fn: () => request('GET', '/treatments') },
+  { name: 'Get single treatment',      fn: () => request('GET', '/treatments/1') },
+  { name: 'Get all vets',              fn: () => request('GET', '/vets') },
+  { name: 'Get single vet',            fn: () => request('GET', '/vets/1') },
+  { name: 'Get all appointment types', fn: () => request('GET', '/appointment-types') },
+  { name: 'Create a vet',              fn: () => request('POST', '/vets', { name: 'Dr. Test', role: 'Veterinarian', bio: 'Created by test', initials: 'DT' }) },
 ];
 
 async function runTests() {

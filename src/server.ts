@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { projectsRouter } from './routes/projects';
-import { tasksRouter } from './routes/tasks';
-import { tagsRouter } from './routes/tags';
+import { treatmentsRouter } from './routes/treatments';
+import { vetsRouter } from './routes/vets';
+import { appointmentTypesRouter } from './routes/appointmentTypes';
 import { errorHandler } from './middleware/errorHandling';
 
 dotenv.config();
@@ -20,9 +20,9 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', environment: NODE_ENV });
 });
 
-app.use('/projects', projectsRouter);
-app.use('/tasks', tasksRouter);
-app.use('/tags', tagsRouter);
+app.use('/treatments', treatmentsRouter);
+app.use('/vets', vetsRouter);
+app.use('/appointment-types', appointmentTypesRouter);
 
 app.use(errorHandler);
 

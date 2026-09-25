@@ -1,48 +1,52 @@
 import { z } from 'zod';
 
-// Task validation schemas
-export const createTaskInputSchema = z.object({
+// Treatment validation schemas
+export const createTreatmentInputSchema = z.object({
+  icon: z.string().min(1, 'Icon is required'),
   title: z.string().min(1, 'Title is required'),
-  description: z.string().optional(),
-  priority: z.number().int().min(0).max(3),
-  status: z.number().int().min(0).max(4),
-  progress: z.number().int().min(0).max(100).optional().default(0),
-  projectId: z.number().int().optional(),
+  description: z.string().min(1, 'Description is required'),
+  duration: z.string().min(1, 'Duration is required'),
 });
 
-export const updateTaskInputSchema = z.object({
+export const updateTreatmentInputSchema = z.object({
+  icon: z.string().min(1, 'Icon cannot be empty').optional(),
   title: z.string().min(1, 'Title cannot be empty').optional(),
-  description: z.string().optional(),
-  priority: z.number().int().min(0).max(3).optional(),
-  status: z.number().int().min(0).max(4).optional(),
-  progress: z.number().int().min(0).max(100).optional(),
-  projectId: z.number().int().optional(),
+  description: z.string().min(1, 'Description cannot be empty').optional(),
+  duration: z.string().min(1, 'Duration cannot be empty').optional(),
 });
 
-// Project validation schemas
-export const createProjectInputSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().optional(),
+// Vet validation schemas
+export const createVetInputSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  role: z.string().min(1, 'Role is required'),
+  bio: z.string().min(1, 'Bio is required'),
+  initials: z.string().min(1, 'Initials are required'),
 });
 
-export const updateProjectInputSchema = z.object({
-  title: z.string().min(1, 'Title cannot be empty').optional(),
-  description: z.string().optional(),
+export const updateVetInputSchema = z.object({
+  name: z.string().min(1, 'Name cannot be empty').optional(),
+  role: z.string().min(1, 'Role cannot be empty').optional(),
+  bio: z.string().min(1, 'Bio cannot be empty').optional(),
+  initials: z.string().min(1, 'Initials cannot be empty').optional(),
 });
 
-// Tag validation schemas
-export const createTagInputSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
+// Appointment type validation schemas
+export const createAppointmentTypeInputSchema = z.object({
+  slug: z.string().min(1, 'Slug is required'),
+  label: z.string().min(1, 'Label is required'),
+  durationMinutes: z.number().int().min(1),
 });
 
-export const updateTagInputSchema = z.object({
-  title: z.string().min(1, 'Title cannot be empty').optional(),
+export const updateAppointmentTypeInputSchema = z.object({
+  slug: z.string().min(1, 'Slug cannot be empty').optional(),
+  label: z.string().min(1, 'Label cannot be empty').optional(),
+  durationMinutes: z.number().int().min(1).optional(),
 });
 
 // Type exports for TypeScript
-export type CreateTaskInput = z.infer<typeof createTaskInputSchema>;
-export type UpdateTaskInput = z.infer<typeof updateTaskInputSchema>;
-export type CreateProjectInput = z.infer<typeof createProjectInputSchema>;
-export type UpdateProjectInput = z.infer<typeof updateProjectInputSchema>;
-export type CreateTagInput = z.infer<typeof createTagInputSchema>;
-export type UpdateTagInput = z.infer<typeof updateTagInputSchema>;
+export type CreateTreatmentInput = z.infer<typeof createTreatmentInputSchema>;
+export type UpdateTreatmentInput = z.infer<typeof updateTreatmentInputSchema>;
+export type CreateVetInput = z.infer<typeof createVetInputSchema>;
+export type UpdateVetInput = z.infer<typeof updateVetInputSchema>;
+export type CreateAppointmentTypeInput = z.infer<typeof createAppointmentTypeInputSchema>;
+export type UpdateAppointmentTypeInput = z.infer<typeof updateAppointmentTypeInputSchema>;

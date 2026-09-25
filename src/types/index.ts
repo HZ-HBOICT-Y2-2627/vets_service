@@ -1,75 +1,65 @@
-// Task types
-export interface Task {
+// Treatment types
+export interface Treatment {
   id: number;
+  icon: string;
   title: string;
-  description: string | null;
-  priority: number; // 0-3
-  status: number; // 0-4
-  progress: number; // 0-100
-  createdAt: Date;
-  completedAt: Date | null;
-  projectId: number | null;
+  description: string;
+  duration: string; // e.g. "15 min"
 }
 
-export interface TaskInput {
+export interface TreatmentInput {
+  icon: string;
   title: string;
-  description?: string;
-  priority: number;
-  status: number;
-  progress?: number;
-  projectId?: number;
+  description: string;
+  duration: string;
 }
 
-export interface TaskUpdateInput {
+export interface TreatmentUpdateInput {
+  icon?: string;
   title?: string;
   description?: string;
-  priority?: number;
-  status?: number;
-  progress?: number;
-  projectId?: number;
+  duration?: string;
 }
 
-// Project types
-export interface Project {
+// Vet types
+export interface Vet {
   id: number;
-  title: string;
-  description: string | null;
+  name: string;
+  role: string;
+  bio: string;
+  initials: string;
 }
 
-export interface ProjectInput {
-  title: string;
-  description?: string;
+export interface VetInput {
+  name: string;
+  role: string;
+  bio: string;
+  initials: string;
 }
 
-export interface ProjectUpdateInput {
-  title?: string;
-  description?: string;
+export interface VetUpdateInput {
+  name?: string;
+  role?: string;
+  bio?: string;
+  initials?: string;
 }
 
-// Tag types
-export interface Tag {
+// Appointment type types
+export interface AppointmentType {
   id: number;
-  title: string;
+  slug: string; // e.g. "vaccination"
+  label: string;
+  durationMinutes: number;
 }
 
-export interface TagInput {
-  title: string;
+export interface AppointmentTypeInput {
+  slug: string;
+  label: string;
+  durationMinutes: number;
 }
 
-export interface TagUpdateInput {
-  title?: string;
-}
-
-// Associated types
-export interface TaskWithRelations extends Task {
-  project?: Project | null;
-  tags?: Tag[];
-}
-
-export interface ProjectWithRelations extends Project {
-  tasks?: Task[];
-}
-
-export interface TagWithRelations extends Tag {
-  tasks?: Task[];
+export interface AppointmentTypeUpdateInput {
+  slug?: string;
+  label?: string;
+  durationMinutes?: number;
 }
